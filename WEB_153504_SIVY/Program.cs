@@ -1,7 +1,10 @@
+using WEB_153504_SIVY.Services.SparePartService;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<ISparePartService, MemorySparePartService>();
 
 var app = builder.Build();
 

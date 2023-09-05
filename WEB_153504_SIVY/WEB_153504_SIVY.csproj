@@ -10,4 +10,8 @@
     <Folder Include="wwwroot\Images\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\WEB_153504_SIVY.Domain\WEB_153504_SIVY.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
