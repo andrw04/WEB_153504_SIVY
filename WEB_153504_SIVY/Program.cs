@@ -1,7 +1,12 @@
+using WEB_153504_SIVY.Services.CarBrandService;
+using WEB_153504_SIVY.Services.CarModelService;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<ICarBrandService, MemoryCarBrandService>();
+builder.Services.AddScoped<ICarModelService, MemoryCarModelService>();
 
 var app = builder.Build();
 

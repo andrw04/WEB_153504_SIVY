@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Security.Cryptography.Xml;
 
 namespace WEB_153504_SIVY.Controllers
 {
