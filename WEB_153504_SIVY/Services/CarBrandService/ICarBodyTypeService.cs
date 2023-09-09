@@ -3,8 +3,8 @@ using WEB_153504_SIVY.Domain.Models;
 
 namespace WEB_153504_SIVY.Services.CarBrandService
 {
-    public interface ICarBrandService
+    public interface ICarBodyTypeService
     {
-        public Task<ResponseData<List<CarBrand>>> GetCarBrandListAsync();
+        public Task<ResponseData<List<CarBodyType>>> GetCarBodyTypeListAsync();
     }
 }

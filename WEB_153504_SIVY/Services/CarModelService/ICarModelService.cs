@@ -5,7 +5,7 @@ namespace WEB_153504_SIVY.Services.CarModelService
 {
     public interface ICarModelService
     {
-        public Task<ResponseData<List<CarModel>>> GetCarModelListAsync
+        public Task<ResponseData<CarModelListModel<CarModel>>> GetCarModelListAsync
             (string? categoryNormalizedName, int pageNo = 1);
         public Task<ResponseData<List<CarModel>>> GetCarModelByIdAsync(int id);
         public Task UpdateCarModelAsync(int id, CarModel carModel, IFormFile? formFile);

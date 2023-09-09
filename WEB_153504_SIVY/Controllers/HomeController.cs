@@ -9,7 +9,7 @@ namespace WEB_153504_SIVY.Controllers
         public string Name { get; set; }
     }
 
-    public class Home : Controller
+    public class HomeController : Controller
     {
         public IActionResult Index()
         {

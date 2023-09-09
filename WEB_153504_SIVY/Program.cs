@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddScoped<ICarBrandService, MemoryCarBrandService>();
+builder.Services.AddScoped<ICarBodyTypeService, MemoryCarBodyTypeService>();
 builder.Services.AddScoped<ICarModelService, MemoryCarModelService>();
 
 var app = builder.Build();
