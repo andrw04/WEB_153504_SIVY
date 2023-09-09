@@ -1,6 +1,6 @@
 ﻿namespace WEB_153504_SIVY.Domain.Entities
 {
-    public class CarBrand
+    public class CarBodyType
     {
         public int Id { get; set; }
         public string Name { get; set; }

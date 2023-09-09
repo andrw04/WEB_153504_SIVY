@@ -1,15 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using WEB_153504_SIVY.Models;
 
 namespace WEB_153504_SIVY.Controllers
 {
-    public class ListDemo
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-    }
 
-    public class Home : Controller
+    public class HomeController : Controller
     {
         public IActionResult Index()
         {

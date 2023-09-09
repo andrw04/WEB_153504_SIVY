@@ -1,10 +1,79 @@
-п»ї@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+@model ResponseData<CarModelListModel<CarModel>>
+
 @{
+    ViewBag.Title = "Catalog";
+
+    var request = ViewContext.HttpContext.Request;
+    var returnUrl = request.Path + request.QueryString.ToUriComponent();
+
+    string? category = request.RouteValues["category"]?.ToString();
+
+    int currentPage = Model.Data.CurrentPage;
+    int totalPages = Model.Data.TotalPages;
+
+    int prev = currentPage == 1 ? 1 : currentPage - 1;
+    int next = currentPage == totalPages ? totalPages : currentPage + 1;
+
 }
 
-@model List<CarModel>
 <main>
-    <h2>sdkjfhjsk</h2>
+    <div class="row">
+        <!-- Фильтр -->
+        <div class="col-sm-2">
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                    @(ViewBag.CurrentCategory ?? "All")
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    <li>
+                        <a class="dropdown-item" asp-asp-controller="CarModel" asp-route-category="@null">All</a>
+                    </li>
+                    @foreach (var item in ViewBag.Categories)
+                    {
+                        <li>
+                            <a class="dropdown-item" asp-controller="CarModel" asp-route-category="@item.NormalizedName">@item.Name</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+        <!-- Список -->
+        <div class="col-sm-10">
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                @foreach (var item in Model.Data.Items)
+                {
+                    <div class="col">
+                        <div class="card h-100">
+                            <img src="@item.Image" class="card-img-top" alt="item.Name">
+                            <div class="card-body">
+                                <h5 class="card-title">@item.Name</h5>
+                                <p class="card-text">@item.Description</p>
+                                <p class="card-text">Price: @item.Price $</p>
+                                <a class="btn btn-outline-secondary" asp-action="Add" asp-route-id="@item.Id" asp-controller="Cart" asp-route-returnUrl="@returnUrl">Add to cart <span class="fa-solid fa-cart-shopping" style="color: gray"></span></a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+        <!-- Кнопки переключения страниц -->
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="page-item">
+                <a class="page-link" asp-controller="CarModel" asp-action="Index" asp-route-category="@ViewBag.CurrentCategory" asp-route-pageno="@prev">Previous</a>
+            </li>
+            @for (int i = 1; i <= totalPages; i++)
+            {
+                <li class="page-item @(currentPage == i ? "active" : "")">
+                    <a class="page-link" asp-controller="CarModel" asp-action="Index" asp-route-category="@ViewBag.CurrentCategory" asp-route-pageno="@i">@i</a>
+                </li>
+            }
+            <li class="page-item">
+                <a class="page-link" asp-controller="CarModel" asp-action="Index" asp-route-category="@ViewBag.CurrentCategory" asp-route-pageno="@next">Next</a>
+            </li>
+        </ul>
+    </nav>
+
 </main>
