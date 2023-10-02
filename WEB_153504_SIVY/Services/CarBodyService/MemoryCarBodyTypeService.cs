@@ -1,7 +1,7 @@
 ﻿using WEB_153504_SIVY.Domain.Entities;
 using WEB_153504_SIVY.Domain.Models;
 
-namespace WEB_153504_SIVY.Services.CarBrandService
+namespace WEB_153504_SIVY.Services.CarBodyService
 {
     public class MemoryCarBodyTypeService : ICarBodyTypeService
     {

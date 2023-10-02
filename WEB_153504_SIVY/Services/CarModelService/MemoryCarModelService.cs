@@ -1,6 +1,6 @@
 ﻿using WEB_153504_SIVY.Domain.Entities;
 using WEB_153504_SIVY.Domain.Models;
-using WEB_153504_SIVY.Services.CarBrandService;
+using WEB_153504_SIVY.Services.CarBodyService;
 
 namespace WEB_153504_SIVY.Services.CarModelService
 {
