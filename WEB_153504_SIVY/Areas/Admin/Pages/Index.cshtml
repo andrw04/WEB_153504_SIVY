@@ -1,0 +1,80 @@
+﻿@page
+@model WEB_153504_SIVY.Areas.Admin.Pages.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+
+    int currentPage = Convert.ToInt32(ViewData["CurrentPage"]);
+    int totalPages = Convert.ToInt32(ViewData["TotalPages"]);
+
+    int prev = currentPage == 1 ? 1 : currentPage - 1;
+    int next = currentPage == totalPages ? totalPages : currentPage + 1;
+}
+
+<h1>Index</h1>
+
+<p>
+    <a class="btn btn-primary" asp-page="Create"><span class="fa-solid fa-plus">&nbsp</span>Create New</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th width="200px">
+                @Html.DisplayNameFor(model => model.CarModel[0].Name)
+            </th>
+            <th width="400px">
+                @Html.DisplayNameFor(model => model.CarModel[0].Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CarModel[0].Price)
+            </th>
+            <th width="400px">
+                @Html.DisplayNameFor(model => model.CarModel[0].Image)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.CarModel) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                <img src="@item.Image" class="card-img-top" alt="item.Name" style="width: 100%; height:auto; max-height: 200px; object-fit: cover">
+                @* @Html.DisplayFor(modelItem => item.Image) *@
+            </td>
+            <td>
+                <a class="btn btn-success" asp-page="./Edit" asp-route-id="@item.Id" asp-route-pageno="@currentPage"><span class="fa-solid fa-pen-to-square">&nbsp</span>Edit</a>
+                <a class="btn btn-warning" asp-page="./Details" asp-route-id="@item.Id"><span class="fa-solid fa-circle-info">&nbsp</span>Details</a>
+                <a class="btn btn-danger" asp-page="./Delete" asp-route-id="@item.Id"><span class="fa-solid fa-trash">&nbsp</span>Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+
+
+
+<ul class="pagination">
+    <li class="page-item">
+        <a class="page-link" asp-area="Admin" asp-page="/Index" asp-route-pageno="@prev">Previous</a>
+    </li>
+    @for (int i = 1; i <= totalPages; i++)
+    {
+        <li class="page-item @(currentPage == i ? "active" : "")">
+            <a class="page-link" asp-area="Admin" asp-page="/Index" asp-route-pageno="@i">@i</a>
+        </li>
+    }
+    <li class="page-item">
+        <a class="page-link" asp-area="Admin" asp-page="/Index" asp-route-pageno="@next">Next</a>
+    </li>
+</ul>

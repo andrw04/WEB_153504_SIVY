@@ -16,13 +16,10 @@ html {
 }
 
 
-body {
-    margin: 0;
-    /*Растягиваем body по высоте*/ 
+/*body {
     min-height: 100%;
-    display: grid;
-    grid-template-rows: auto 1fr auto;
-}
+    grid-template-arows: auto 1fr auto;
+}*/
 
 main {
     min-height: 100%;
@@ -31,7 +28,6 @@ main {
 }
 
 footer {
-    position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;

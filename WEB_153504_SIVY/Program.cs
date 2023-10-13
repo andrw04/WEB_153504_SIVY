@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using WEB_153504_SIVY.Models;
 using WEB_153504_SIVY.Services.CarBodyService;
 using WEB_153504_SIVY.Services.CarModelService;
@@ -17,6 +18,8 @@ var UriData = new UriData()
 
 builder.Services.AddHttpClient<ICarModelService, ApiCarModelService>(opt => opt.BaseAddress = new Uri(UriData.ApiUri));
 builder.Services.AddHttpClient<ICarBodyTypeService, ApiCarBodyTypeService>(opt => opt.BaseAddress = new Uri(UriData.ApiUri));
+
+builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
@@ -39,7 +42,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+app.MapRazorPages();
+
 app.Run();
-
-
-UriData ApiUri = builder.Configuration.GetValue<UriData>("UriData");

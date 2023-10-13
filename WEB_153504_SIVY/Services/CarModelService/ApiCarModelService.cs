@@ -23,9 +23,45 @@ namespace WEB_153504_SIVY.Services.CarModelService
             _logger = logger;
         }
 
-        public Task<ResponseData<CarModel>> CreateCarModelAsync(CarModel carModel, IFormFile? formFile)
+        public async Task<ResponseData<CarModel>> CreateCarModelAsync(CarModel carModel, IFormFile? formFile)
         {
-            throw new NotImplementedException();
+            // api/CarModels
+            var urlString = new StringBuilder($"{_httpClient.BaseAddress.AbsoluteUri}CarModels/");
+
+            var content = JsonContent.Create(carModel);
+
+            var response = await _httpClient.PostAsync(new Uri(urlString.ToString()), content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                try
+                {
+                    var responseCarModel = await response.Content.ReadFromJsonAsync<CarModel>();
+                    if (formFile != null)
+                    {
+                        await SaveImageAsync(responseCarModel.Id, formFile);
+                    }
+                    return new ResponseData<CarModel> {
+                            Data = responseCarModel,
+                        };
+                }
+                catch (JsonException e)
+                {
+                    _logger.LogError($"-----> Ошибка: {e.Message}");
+                    return new ResponseData<CarModel>
+                    {
+                        Success = false,
+                        ErrorMessage = $"Ошибка: {e.Message}"
+                    };
+                }
+            }
+
+            _logger.LogError($"-----> Данные не получены от сервера. Error: {response.StatusCode.ToString()}");
+            return new ResponseData<CarModel>
+            {
+                Success = false,
+                ErrorMessage = $"-----> Данные не получены от сервера. Error: {response.StatusCode.ToString()}"
+            };
         }
 
         public Task DeleteCarModelAsync(int id)
@@ -86,9 +122,34 @@ namespace WEB_153504_SIVY.Services.CarModelService
             };
         }
 
-        public Task UpdateCarModelAsync(int id, CarModel carModel, IFormFile? formFile)
+        public async Task UpdateCarModelAsync(int id, CarModel carModel, IFormFile? formFile)
         {
-            throw new NotImplementedException();
+            var urlString = new StringBuilder($"{_httpClient.BaseAddress.AbsoluteUri}CarModels/{id}");
+
+            var content = JsonContent.Create(carModel);
+            var response = _httpClient.PutAsync(urlString.ToString(), content);
+
+            if (response.IsCompletedSuccessfully)
+            {
+                await SaveImageAsync(id, formFile);
+            }
+        }
+
+        private async Task SaveImageAsync(int id, IFormFile image)
+        {
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Post,
+                RequestUri = new Uri($"{_httpClient.BaseAddress.AbsoluteUri}CarModels/{id}")
+            };
+
+            var content = new MultipartFormDataContent();
+            var streamContent = new StreamContent(image.OpenReadStream());
+
+            content.Add(streamContent, "formFile", image.FileName);
+            request.Content = content;
+
+            await _httpClient.SendAsync(request);
         }
     }
 }

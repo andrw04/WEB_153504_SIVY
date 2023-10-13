@@ -17,12 +17,20 @@ namespace WEB_153504_SIVY.API.Controllers
     public class CarModelsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly string _imagesPath;
+        private readonly string _appUri;
         private readonly ICarModelService _carModelService;
 
-        public CarModelsController(ApplicationDbContext context, ICarModelService carModelService)
+        public CarModelsController(ApplicationDbContext context,
+            IWebHostEnvironment env,
+            ICarModelService carModelService,
+            IConfiguration config)
         {
             _context = context;
             _carModelService = carModelService;
+            _imagesPath = Path.Combine(env.WebRootPath, "Images");
+            _appUri = config.GetSection("applicationUrl").Value;
+
         }
 
         [HttpGet]
@@ -121,6 +129,17 @@ namespace WEB_153504_SIVY.API.Controllers
         private bool CarModelExists(int id)
         {
             return (_context.CarModels?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+
+        [HttpPost("{id}")]
+        public async Task<ActionResult<ResponseData<string>>> PostImage(int id, IFormFile formFile)
+        {
+            var response = await _carModelService.SaveImageAsync(id, formFile);
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+            return NotFound(response);
         }
     }
 }

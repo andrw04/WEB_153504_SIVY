@@ -10,10 +10,16 @@ namespace WEB_153504_SIVY.API.Services.CarModelService
         private readonly int _maxPageSize = 20;
 
         private ApplicationDbContext _context;
+        private IHttpContextAccessor _httpContextAccessor;
+        private IWebHostEnvironment _environment;
 
-        public CarModelService(ApplicationDbContext context)
+        public CarModelService(ApplicationDbContext context,
+            IHttpContextAccessor httpContextAccessor,
+            IWebHostEnvironment environment)
         {
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
+            _environment = environment;
         }
 
         public Task<ResponseData<CarModel>> CreateCarModelAsync(CarModel carModel)
@@ -68,9 +74,49 @@ namespace WEB_153504_SIVY.API.Services.CarModelService
             return response;
         }
 
-        public Task<ResponseData<string>> SaveImageAsync(int id, IFormFile formFile)
+        public async Task<ResponseData<string>> SaveImageAsync(int id, IFormFile formFile)
         {
-            throw new NotImplementedException();
+            var responseData = new ResponseData<string>();
+            var carModel = await _context.CarModels.FindAsync(id);
+            if (carModel == null)
+            {
+                responseData.Success = false;
+                responseData.Data = "No item found";
+                return responseData;
+            }
+            var host = "https://" + _httpContextAccessor.HttpContext.Request.Host;
+
+            var imageFolder = Path.Combine(_environment.WebRootPath, "Images");
+
+            if (formFile != null)
+            {
+                if (!string.IsNullOrEmpty(carModel.Image))
+                {
+                    var prevImage = Path.GetFileName(carModel.Image);
+                    var prevPath = Path.Combine(imageFolder, prevImage);
+
+                    if (File.Exists(prevPath))
+                    {
+                        File.Delete(prevPath);
+                    }
+                }
+                // Создать имя файла
+                var ext = Path.GetExtension(formFile.FileName);
+                var fName = Path.ChangeExtension(Path.GetRandomFileName(), ext);
+                // сохранить файл
+
+                using (FileStream stream = new FileStream(Path.Combine(imageFolder, fName), FileMode.Create))
+                {
+                    formFile.CopyTo(stream);
+                }
+
+                // Указать имя файла в объекте
+                carModel.Image = $"{host}/Images/{fName}";
+                await _context.SaveChangesAsync();
+            }
+
+            responseData.Data = carModel.Image;
+            return responseData;
         }
 
         public Task UpdateCarModelAsync(int id, CarModel carModel)
