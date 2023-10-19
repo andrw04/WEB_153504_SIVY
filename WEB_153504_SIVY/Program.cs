@@ -7,8 +7,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-//builder.Services.AddScoped<ICarBodyTypeService, MemoryCarBodyTypeService>();
-//builder.Services.AddScoped<ICarModelService, MemoryCarModelService>();
 
 var UriData = new UriData()
 {
@@ -18,6 +16,25 @@ var UriData = new UriData()
 
 builder.Services.AddHttpClient<ICarModelService, ApiCarModelService>(opt => opt.BaseAddress = new Uri(UriData.ApiUri));
 builder.Services.AddHttpClient<ICarBodyTypeService, ApiCarBodyTypeService>(opt => opt.BaseAddress = new Uri(UriData.ApiUri));
+
+builder.Services.AddAuthentication(opt =>
+{
+    opt.DefaultScheme = "cookie";
+    opt.DefaultChallengeScheme = "oidc";
+})
+    .AddCookie("cookie")
+    .AddOpenIdConnect("oidc", options =>
+    {
+        options.Authority = builder.Configuration["InteractiveServiceSettings:AuthorityUrl"];
+        options.ClientId = builder.Configuration["InteractiveServiceSettings:ClientId"];
+        options.ClientSecret = builder.Configuration["InteractiveServiceSettings:ClientSecret"];
+
+        options.ResponseType = "code";
+        options.ResponseMode = "query";
+        options.SaveTokens = true;
+    });
+
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddRazorPages();
 
@@ -36,12 +53,15 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.MapRazorPages();
+app.MapRazorPages()
+    .RequireAuthorization();
 
 app.Run();

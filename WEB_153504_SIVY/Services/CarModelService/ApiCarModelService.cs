@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using Microsoft.AspNetCore.Authentication;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Text.Json;
 using WEB_153504_SIVY.Domain.Entities;
 using WEB_153504_SIVY.Domain.Models;
@@ -8,11 +10,15 @@ namespace WEB_153504_SIVY.Services.CarModelService
     public class ApiCarModelService : ICarModelService
     {
         private readonly HttpClient _httpClient;
+        private readonly HttpContext _httpContext;
         private ILogger<ApiCarModelService> _logger;
         private string _pageSize;
         JsonSerializerOptions _serializerOptions;
 
-        public ApiCarModelService(HttpClient httpClient, IConfiguration configuration, ILogger<ApiCarModelService> logger)
+        public ApiCarModelService(HttpClient httpClient,
+            IConfiguration configuration,
+            ILogger<ApiCarModelService> logger,
+            IHttpContextAccessor httpContextAccessor)
         {
             _httpClient = httpClient;
             _pageSize = configuration.GetSection("ItemsPerPage").Value;
@@ -21,7 +27,9 @@ namespace WEB_153504_SIVY.Services.CarModelService
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
             _logger = logger;
+            _httpContext = httpContextAccessor.HttpContext;
         }
+
 
         public async Task<ResponseData<CarModel>> CreateCarModelAsync(CarModel carModel, IFormFile? formFile)
         {
@@ -30,6 +38,7 @@ namespace WEB_153504_SIVY.Services.CarModelService
 
             var content = JsonContent.Create(carModel);
 
+            await SetToken();
             var response = await _httpClient.PostAsync(new Uri(urlString.ToString()), content);
 
             if (response.IsSuccessStatusCode)
@@ -93,6 +102,7 @@ namespace WEB_153504_SIVY.Services.CarModelService
                 urlString.Append(QueryString.Create("pageSize", _pageSize));
             }
 
+            await SetToken();
             var response = await _httpClient.GetAsync(new Uri(urlString.ToString()));
 
             if (response.IsSuccessStatusCode)
@@ -127,11 +137,16 @@ namespace WEB_153504_SIVY.Services.CarModelService
             var urlString = new StringBuilder($"{_httpClient.BaseAddress.AbsoluteUri}CarModels/{id}");
 
             var content = JsonContent.Create(carModel);
+            await SetToken();
             var response = _httpClient.PutAsync(urlString.ToString(), content);
 
             if (response.IsCompletedSuccessfully)
             {
                 await SaveImageAsync(id, formFile);
+            }
+            else
+            {
+                _logger.LogError($"-----> Error: {response.Result.StatusCode.ToString()}");
             }
         }
 
@@ -149,7 +164,14 @@ namespace WEB_153504_SIVY.Services.CarModelService
             content.Add(streamContent, "formFile", image.FileName);
             request.Content = content;
 
+            await SetToken();
             await _httpClient.SendAsync(request);
+        }
+
+        private async Task SetToken()
+        {
+            var token = await _httpContext.GetTokenAsync("access_token");
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
         }
     }
 }
