@@ -76,6 +76,14 @@ namespace WEB_153504_SIVY.IdentityServer
                     throw new Exception(result.Errors.First().Description);
                 }
 
+                result = userManager.AddClaimsAsync(user, new Claim[]{
+                            new Claim(JwtClaimTypes.Name, "user"),
+                        }).Result;
+                if (!result.Succeeded)
+                {
+                    throw new Exception(result.Errors.First().Description);
+                }
+
                 await userManager.AddToRoleAsync(user, "user");
 
                 Log.Debug("user created");
@@ -96,6 +104,14 @@ namespace WEB_153504_SIVY.IdentityServer
                     EmailConfirmed = true,
                 };
                 var result = await userManager.CreateAsync(admin, "Pass123$");
+                if (!result.Succeeded)
+                {
+                    throw new Exception(result.Errors.First().Description);
+                }
+
+                result = userManager.AddClaimsAsync(admin, new Claim[]{
+                            new Claim(JwtClaimTypes.Name, "Admin"),
+                        }).Result;
                 if (!result.Succeeded)
                 {
                     throw new Exception(result.Errors.First().Description);

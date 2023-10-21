@@ -29,6 +29,8 @@ builder.Services.AddAuthentication(opt =>
         options.ClientId = builder.Configuration["InteractiveServiceSettings:ClientId"];
         options.ClientSecret = builder.Configuration["InteractiveServiceSettings:ClientSecret"];
 
+        options.GetClaimsFromUserInfoEndpoint = true;
+
         options.ResponseType = "code";
         options.ResponseMode = "query";
         options.SaveTokens = true;
@@ -61,7 +63,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.MapRazorPages()
-    .RequireAuthorization();
+app.MapRazorPages().RequireAuthorization();
 
 app.Run();
