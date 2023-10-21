@@ -11,12 +11,21 @@ namespace WEB_153504_SIVY.IdentityServer
     {
         public static WebApplication ConfigureServices(this WebApplicationBuilder builder)
         {
+            // сервис контроллеров
             builder.Services.AddRazorPages();
+            builder.Services.AddControllers();
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(opt =>
+            {
+                opt.SignIn.RequireConfirmedAccount = false;
+                opt.Password.RequireNonAlphanumeric = false;
+                opt.Password.RequireLowercase = false;
+                opt.Password.RequireUppercase = false;
+                opt.Password.RequireDigit = false;
+                })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
@@ -65,8 +74,10 @@ namespace WEB_153504_SIVY.IdentityServer
             app.UseIdentityServer();
             app.UseAuthorization();
 
-            app.MapRazorPages()
-                .RequireAuthorization();
+
+            app.MapRazorPages().RequireAuthorization();
+            // маршрутизация контроллеров
+            app.MapControllers().RequireAuthorization();
 
             return app;
         }

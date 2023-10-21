@@ -1,5 +1,8 @@
-﻿using Serilog;
+using Serilog;
 using WEB_153504_SIVY.IdentityServer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using WEB_153504_SIVY.IdentityServer.Data;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
