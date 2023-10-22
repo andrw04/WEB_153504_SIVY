@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WEB_153504_SIVY.Extensions;
 using WEB_153504_SIVY.Services.CarBodyService;
 using WEB_153504_SIVY.Services.CarModelService;
 
@@ -25,7 +26,12 @@ namespace WEB_153504_SIVY.Controllers
             var categories = await carBodyTypeService.GetCarBodyTypeListAsync();
             ViewBag.Categories = categories.Data;
 
-            return View(carModelResponse);
+            string s = Request.Headers["x-requested-with"].ToString();
+
+            if (Request.IsAjaxRequest())
+                return PartialView(carModelResponse);
+            else
+                return View(carModelResponse);
         }
 
     }

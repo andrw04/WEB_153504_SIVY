@@ -61,20 +61,4 @@
     </tbody>
 </table>
 
-
-
-
-<ul class="pagination">
-    <li class="page-item">
-        <a class="page-link" asp-area="Admin" asp-page="/Index" asp-route-pageno="@prev">Previous</a>
-    </li>
-    @for (int i = 1; i <= totalPages; i++)
-    {
-        <li class="page-item @(currentPage == i ? "active" : "")">
-            <a class="page-link" asp-area="Admin" asp-page="/Index" asp-route-pageno="@i">@i</a>
-        </li>
-    }
-    <li class="page-item">
-        <a class="page-link" asp-area="Admin" asp-page="/Index" asp-route-pageno="@next">Next</a>
-    </li>
-</ul>
+<pager current-page="@currentPage" total-pages="@totalPages" admin="true"></pager>
