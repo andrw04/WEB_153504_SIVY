@@ -14,6 +14,8 @@ namespace WEB_153504_SIVY.Controllers
             this.carModelService = carModelService;
             this.carBodyTypeService = carBodyTypeService;
         }
+
+        [Route("Catalog/{category?}")]
         public async Task<IActionResult> Index(string? category, int pageno = 1)
         {
             ViewBag.CurrentCategory = category;

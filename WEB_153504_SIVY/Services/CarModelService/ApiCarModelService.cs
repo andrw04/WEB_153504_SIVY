@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Authentication;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
@@ -78,9 +79,37 @@ namespace WEB_153504_SIVY.Services.CarModelService
             throw new NotImplementedException();
         }
 
-        public Task<ResponseData<List<CarModel>>> GetCarModelByIdAsync(int id)
+        public async Task<ResponseData<CarModel>> GetCarModelByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var urlString = $"{_httpClient.BaseAddress.AbsoluteUri}CarModels/{id}";
+            await SetToken();
+            var response = await _httpClient.GetAsync(urlString);
+
+            if (response.IsSuccessStatusCode)
+            {
+                try
+                {
+                    return await response
+                        .Content
+                        .ReadFromJsonAsync<ResponseData<CarModel>>(_serializerOptions);
+                }
+                catch (JsonException e)
+                {
+                    _logger.LogError($"-----> Ошибка: {e.Message}");
+                    return new ResponseData<CarModel>
+                    {
+                        Success = false,
+                        ErrorMessage = $"Ошибка: {e.Message}"
+                    };
+                }
+            }
+
+            _logger.LogError($"-----> Данные не получены от сервера. Error: {response.StatusCode.ToString()}");
+            return new ResponseData<CarModel>
+            {
+                Success = false,
+                ErrorMessage = $"-----> Данные не получены от сервера. Error: {response.StatusCode.ToString()}"
+            };
         }
 
         public async Task<ResponseData<CarModelListModel<CarModel>>> GetCarModelListAsync(string? categoryNormalizedName, int pageNo = 1)

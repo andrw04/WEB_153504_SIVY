@@ -144,5 +144,10 @@ namespace WEB_153504_SIVY.Services.CarModelService
         {
             throw new NotImplementedException();
         }
+
+        Task<ResponseData<CarModel>> ICarModelService.GetCarModelByIdAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

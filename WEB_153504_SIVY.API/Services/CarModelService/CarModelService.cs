@@ -27,6 +27,11 @@ namespace WEB_153504_SIVY.API.Services.CarModelService
             throw new NotImplementedException();
         }
 
+        public async Task<ResponseData<CarModel>> GetCarModelByIdAsync(int id)
+        {
+            return new ResponseData<CarModel> { Data = await _context.CarModels.FindAsync(id) };
+        }
+
         public async Task<ResponseData<CarModelListModel<CarModel>>> GetCarModelListAsync(string? normalizedName, int pageNo, int pageSize = 3)
         {
             if (pageSize > _maxPageSize)

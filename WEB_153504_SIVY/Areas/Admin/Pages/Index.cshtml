@@ -48,8 +48,7 @@
                 @Html.DisplayFor(modelItem => item.Price)
             </td>
             <td>
-                <img src="@item.Image" class="card-img-top" alt="item.Name" style="width: 100%; height:auto; max-height: 200px; object-fit: cover">
-                @* @Html.DisplayFor(modelItem => item.Image) *@
+                <img src="@item.Image" class="card-img-top" alt="item.Name" style="width: 100%; height:auto; max-height: 200px; object-fit: cover;">
             </td>
             <td>
                 <a class="btn btn-success" asp-page="./Edit" asp-route-id="@item.Id" asp-route-pageno="@currentPage"><span class="fa-solid fa-pen-to-square">&nbsp</span>Edit</a>

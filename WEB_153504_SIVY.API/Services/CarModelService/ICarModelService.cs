@@ -7,6 +7,8 @@ namespace WEB_153504_SIVY.API.Services.CarModelService
     {
         public Task<ResponseData<CarModelListModel<CarModel>>> GetCarModelListAsync(string? normalizedName, int pageNo, int pageSize = 3);
 
+        public Task<ResponseData<CarModel>> GetCarModelByIdAsync(int id);
+
         public Task UpdateCarModelAsync(int id, CarModel carModel);
 
         public Task<ResponseData<CarModel>> CreateCarModelAsync(CarModel carModel);

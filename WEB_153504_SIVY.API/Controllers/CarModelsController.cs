@@ -49,13 +49,13 @@ namespace WEB_153504_SIVY.API.Controllers
         // GET: api/CarModels/5
         [HttpGet("{id:int}")]
         [AllowAnonymous]
-        public async Task<ActionResult<CarModel>> GetCarModel(int id)
+        public async Task<ActionResult<ResponseData<CarModel>>> GetCarModel(int id)
         {
           if (_context.CarModels == null)
           {
               return NotFound();
           }
-            var carModel = await _context.CarModels.FindAsync(id);
+            var carModel = await _carModelService.GetCarModelByIdAsync(id);
 
             if (carModel == null)
             {

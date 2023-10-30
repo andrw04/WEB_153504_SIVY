@@ -1,0 +1,39 @@
+﻿@model Cart
+
+<h2>Ваша корзина</h2>
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Фото</th>
+            <th>Описание товара</th>
+            <th>Предмет</th>
+            <th class="text-right">Цена</th>
+            <th>Количество</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model?.CartItems)
+        {
+            <tr style="height:auto">
+                <td>
+                    <img class="card-img-top" style="width: 100%; height:auto; max-height: 200px; object-fit: cover;" src="@item.Value.CarModel.Image" alt="item.Name">
+                </td>
+                <td class="text-left">@item.Value?.CarModel?.Description</td>
+                <td class="text-left">@item.Value?.CarModel?.Name</td>
+                <td class="text-right">@item.Value?.CarModel?.Price.ToString()$</td>
+                <td class="text-center">@item.Value?.Quantity</td>
+                <td class="text-center">
+                    <form asp-action="Remove" asp-controller="Cart" asp-route-id="@item.Key">
+                        <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="4" class="text-right">Сумма заказа:</td>
+            <td class="text-right">@Model?.TotalPrice</td>
+        </tr>
+    </tfoot>
+</table>

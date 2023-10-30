@@ -14,6 +14,9 @@ var UriData = new UriData()
     IsUri = builder.Configuration.GetSection("UriData").GetSection("IsUri").Value,
 };
 
+// add cart service
+builder.Services.AddScoped<WEB_153504_SIVY.Domain.Entities.Cart>(sp => SessionCart.GetCart(sp));
+
 builder.Services.AddHttpClient<ICarModelService, ApiCarModelService>(opt => opt.BaseAddress = new Uri(UriData.ApiUri));
 builder.Services.AddHttpClient<ICarBodyTypeService, ApiCarBodyTypeService>(opt => opt.BaseAddress = new Uri(UriData.ApiUri));
 
@@ -40,6 +43,9 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddRazorPages();
 
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -58,6 +64,8 @@ app.UseRouting();
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
