@@ -26,11 +26,13 @@ namespace WEB_153504_SIVY.Controllers
                 return NotFound(carModelResponse.ErrorMessage);
 
             var categories = await carBodyTypeService.GetCarBodyTypeListAsync();
+
+            if (!categories.Success)
+                return NotFound(categories.ErrorMessage);
+
             ViewBag.Categories = categories.Data;
 
-            string s = Request.Headers["x-requested-with"].ToString();
-
-            if (Request.IsAjaxRequest())
+            if (Request is not null && Request.IsAjaxRequest())
                 return PartialView(carModelResponse);
             else
                 return View(carModelResponse);
