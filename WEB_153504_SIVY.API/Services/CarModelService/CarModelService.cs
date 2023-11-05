@@ -32,7 +32,7 @@ namespace WEB_153504_SIVY.API.Services.CarModelService
             return new ResponseData<CarModel> { Data = await _context.CarModels.FindAsync(id) };
         }
 
-        public async Task<ResponseData<CarModelListModel<CarModel>>> GetCarModelListAsync(string? normalizedName, int pageNo, int pageSize = 3)
+        public async Task<ResponseData<CarModelListModel<CarModel>>> GetCarModelListAsync(string? normalizedName, int pageNo = 1, int pageSize = 3)
         {
             if (pageSize > _maxPageSize)
                 pageSize = _maxPageSize;
