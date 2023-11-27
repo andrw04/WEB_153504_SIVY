@@ -48,6 +48,16 @@ namespace WEB_153504_SIVY.IdentityServer
                 AllowOfflineAccess = true,
                 AllowedScopes = { "openid", "profile", "api.read", "api.write" }
             },
+            new Client
+            {
+                ClientId = "blazorApp",
+                AllowedGrantTypes = GrantTypes.Code,
+                RequireClientSecret = false,
+                RedirectUris = { "https://localhost:7084/authentication/login-callback" },
+                PostLogoutRedirectUris = { "https://localhost:7084/authentication/logout-callback" },
+                AllowOfflineAccess = true,
+                AllowedScopes = { "openid", "profile", "api.read","api.write"}
+            }
             };
     }
 }

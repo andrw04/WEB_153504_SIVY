@@ -16,7 +16,6 @@ namespace WEB_153504_SIVY.API.Controllers
     
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class CarModelsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -40,7 +39,6 @@ namespace WEB_153504_SIVY.API.Controllers
         [HttpGet("{category}")]
         [HttpGet("page{pageNo:int}")]
         [HttpGet("{category}/page{pageNo:int}")]
-        [AllowAnonymous]
         public async Task<ActionResult<ResponseData<List<CarModel>>>> GetCarModels(string? category, int pageNo = 1, int pageSize = 3)
         {
             return Ok(await _carModelService.GetCarModelListAsync(category, pageNo, pageSize));
@@ -48,7 +46,6 @@ namespace WEB_153504_SIVY.API.Controllers
 
         // GET: api/CarModels/5
         [HttpGet("{id:int}")]
-        [AllowAnonymous]
         public async Task<ActionResult<ResponseData<CarModel>>> GetCarModel(int id)
         {
           if (_context.CarModels == null)

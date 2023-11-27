@@ -24,17 +24,6 @@ namespace WEB_153504_SIVY.API.Controllers
             _carBodyService = carBodyService;
         }
 
-        // GET: api/CarBodyTypes
-        /*        [HttpGet]
-                public async Task<ActionResult<IEnumerable<CarBodyType>>> GetCarBodyTypes()
-                {
-                  if (_context.CarBodyTypes == null)
-                  {
-                      return NotFound();
-                  }
-                    return await _context.CarBodyTypes.ToListAsync();
-                }*/
-
         [HttpGet]
         public async Task<ActionResult<List<CarBodyType>>> GetCarBodyTypes()
         {

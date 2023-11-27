@@ -30,6 +30,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     opt.TokenValidationParameters.ValidTypes = new[] { "at+jwt" };
 });
 
+builder.Services.AddCors(); // добавляем сервисы CORS
+
 var app = builder.Build();
 
 await DbInitializer.SeedData(app);
@@ -50,5 +52,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.UseStaticFiles();
+
+app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
 app.Run();

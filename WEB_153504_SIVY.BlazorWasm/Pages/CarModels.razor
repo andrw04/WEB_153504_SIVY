@@ -1,0 +1,47 @@
+﻿@page "/carmodel"
+@inject HttpClient httpClient
+@inject IDataService dataService;
+
+<h3>CarModel</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th><th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Models.Count() == 0)
+        {
+            
+        }
+        else
+        {
+            @foreach (CarModel model in Models)
+            {
+                <tr>
+                    <td>@model.Name</td>
+                    <td>@model.Description</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+@code {
+    List<CarModel> Models { get; set; } = new List<CarModel>();
+
+    protected async override Task OnInitializedAsync()
+    {
+        await dataService.GetCarModelListAsync(null,1);
+        Models = dataService.CarModels;
+
+        /*var response = await httpClient.GetAsync("CarModels");
+        if (response.IsSuccessStatusCode)
+        {
+            var data = await response.Content.ReadFromJsonAsync<ResponseData<CarModelListModel<CarModel>>>();
+            Models = data.Data.Items;
+        }*/
+    }
+
+}

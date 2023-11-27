@@ -69,6 +69,13 @@ namespace WEB_153504_SIVY.IdentityServer
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCors(opt =>
+            {
+                opt.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+            });
+            // маршрутизация контроллеров
+            app.MapControllers();
+
             app.UseStaticFiles();
             app.UseRouting();
             app.UseIdentityServer();
@@ -76,8 +83,6 @@ namespace WEB_153504_SIVY.IdentityServer
 
 
             app.MapRazorPages().RequireAuthorization();
-            // маршрутизация контроллеров
-            app.MapControllers().RequireAuthorization();
 
             return app;
         }
