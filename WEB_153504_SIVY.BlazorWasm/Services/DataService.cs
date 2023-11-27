@@ -1,4 +1,6 @@
-﻿using System.Data.SqlTypes;
+﻿using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+using System.Net.Http.Headers;
+using System.Data.SqlTypes;
 using System.Net.Http.Json;
 using System.Text;
 using WEB_153504_SIVY.Domain.Entities;
@@ -17,11 +19,13 @@ namespace WEB_153504_SIVY.BlazorWasm.Services
 
         private readonly IConfiguration _configuration;
         private readonly HttpClient _httpClient;
+        private readonly IAccessTokenProvider _tokenProvider;
 
-        public DataService(HttpClient httpClient, IConfiguration configuration)
+        public DataService(HttpClient httpClient, IConfiguration configuration, IAccessTokenProvider tokenProvider)
         {
             _configuration = configuration;
             _httpClient = httpClient;
+            _tokenProvider = tokenProvider;
         }
 
         public Task GetBodyTypeByIdAsync(int id)
@@ -59,24 +63,37 @@ namespace WEB_153504_SIVY.BlazorWasm.Services
 
         public async Task GetCarModelListAsync(string? categoryNormalizedName, int pageNo = 1)
         {
-            var url = new StringBuilder("CarModels/");
-            if (categoryNormalizedName != null)
+            try
             {
-                url.Append($"{categoryNormalizedName}/");
-            }
+                var tokenRequest = await _tokenProvider.RequestAccessToken();
+                if (tokenRequest.TryGetToken(out var token))
+                {
+                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token.Value);
+                }
 
-            if (pageNo > 1)
-            {
-                url.Append($"page{pageNo}");
-            }
+                var url = new StringBuilder("CarModels/");
+                if (categoryNormalizedName != null)
+                {
+                    url.Append($"{categoryNormalizedName}/");
+                }
 
-            var response = await _httpClient.GetAsync(url.ToString());
-            if (response.IsSuccessStatusCode)
+                if (pageNo > 1)
+                {
+                    url.Append($"page{pageNo}");
+                }
+
+                var response = await _httpClient.GetAsync(url.ToString());
+                if (response.IsSuccessStatusCode)
+                {
+                    var data = await response.Content.ReadFromJsonAsync<ResponseData<CarModelListModel<CarModel>>>();
+                    CarModels = data.Data.Items;
+                    TotalPages = data.Data.TotalPages;
+                    CurrentPage = data.Data.CurrentPage;
+                }
+            }
+            catch
             {
-                var data = await response.Content.ReadFromJsonAsync<ResponseData<CarModelListModel<CarModel>>>();
-                CarModels = data.Data.Items;
-                TotalPages = data.Data.TotalPages;
-                CurrentPage = data.Data.CurrentPage;
+                throw;
             }
         }
     }

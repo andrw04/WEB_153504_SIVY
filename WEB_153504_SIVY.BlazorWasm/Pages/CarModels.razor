@@ -5,6 +5,7 @@
 <h3>CarModel</h3>
 
 <table class="table">
+
     <thead>
         <tr>
             <th>Name</th><th>Description</th>
@@ -13,7 +14,9 @@
     <tbody>
         @if (Models.Count() == 0)
         {
-            
+            <tr>
+                <td colspan="2">Empty car model list...</td>
+            </tr>
         }
         else
         {
@@ -28,20 +31,21 @@
     </tbody>
 </table>
 
+
 @code {
     List<CarModel> Models { get; set; } = new List<CarModel>();
 
     protected async override Task OnInitializedAsync()
     {
-        await dataService.GetCarModelListAsync(null,1);
-        Models = dataService.CarModels;
-
-        /*var response = await httpClient.GetAsync("CarModels");
-        if (response.IsSuccessStatusCode)
+        try
         {
-            var data = await response.Content.ReadFromJsonAsync<ResponseData<CarModelListModel<CarModel>>>();
-            Models = data.Data.Items;
-        }*/
+            await dataService.GetCarModelListAsync(null,1);
+            Models = dataService.CarModels;
+        }
+        catch
+        {
+            Models = new List<CarModel>();
+        }
     }
 
 }

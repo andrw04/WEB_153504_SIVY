@@ -16,6 +16,7 @@ namespace WEB_153504_SIVY.API.Controllers
     
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CarModelsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
