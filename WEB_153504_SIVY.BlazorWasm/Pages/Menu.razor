@@ -2,14 +2,17 @@
 @page "/menu/{pageno:int}"
 @page "/menu/{carbodytype}"
 @page "/menu/{carbodytype}/{pageno:int}"
+@attribute [Authorize]
 
 <PageTitle>Menu</PageTitle>
 
 <CarBodyTypeSelector SelectedName="@SelectedName"/>
 
-<CarModelList/>
+<CarModelList CarModelSelected="@FindCarModel"/>
 
 <Pager CarBodyType="@CarBodyType" />
+
+<CarModelDetails SelectedCarModel="@SelectedCarModel"/>
 
 @code {
     [Inject]
@@ -22,6 +25,8 @@
     public int? PageNo { get; set; }
 
     public string SelectedName { get; set; }
+
+    public CarModel SelectedCarModel { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -47,5 +52,11 @@
     protected override async Task OnInitializedAsync()
     {
         await DataService.GetCarModelListAsync(null);
+    }
+
+    public async void FindCarModel(int id)
+    {
+        SelectedCarModel = DataService.CarModels.First(m => m.Id == id);
+        await InvokeAsync(StateHasChanged);
     }
 }

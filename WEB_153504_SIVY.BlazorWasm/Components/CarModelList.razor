@@ -6,6 +6,7 @@
         <tr>
             <th>Name</th>
             <th>Description</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -22,6 +23,7 @@
                 <tr>
                     <td>@model.Name</td>
                     <td>@model.Description</td>
+                    <td><button type="button" class="btn btn-outline-primary" @onclick="()=>CarModelSelected?.Invoke(model.Id)">Details</button></td>
                 </tr>
             }
         }
@@ -30,6 +32,11 @@
 
 
 @code {
+    public delegate void Find(int id);
+
+    [Parameter]
+    public Find? CarModelSelected{ get; set; }
+
     protected async override Task OnInitializedAsync()
     {
         dataService.DataLoaded += StateHasChanged;
