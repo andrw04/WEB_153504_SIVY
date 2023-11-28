@@ -4,7 +4,8 @@ namespace WEB_153504_SIVY.BlazorWasm.Services
 {
     public interface IDataService
     {
-        List<CarBodyType> BodyTypes { get; set; }
+        event Action DataLoaded;
+        List<CarBodyType> CarBodyTypes { get; set; }
         List<CarModel> CarModels { get; set; }
         bool Success { get; set; }
         string ErrorMessage { get; set; }

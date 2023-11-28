@@ -1,0 +1,43 @@
+﻿@inject IDataService dataService
+@implements IDisposable
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (dataService.CarModels.Count() == 0)
+        {
+            <tr>
+                <td colspan="2">Empty car model list...</td>
+            </tr>
+        }
+        else
+        {
+            @foreach (CarModel model in dataService.CarModels)
+            {
+                <tr>
+                    <td>@model.Name</td>
+                    <td>@model.Description</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+
+@code {
+    protected async override Task OnInitializedAsync()
+    {
+        dataService.DataLoaded += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        dataService.DataLoaded -= StateHasChanged;
+    }
+
+}

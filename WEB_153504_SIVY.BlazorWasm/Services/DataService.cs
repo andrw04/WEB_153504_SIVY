@@ -10,7 +10,7 @@ namespace WEB_153504_SIVY.BlazorWasm.Services
 {
     public class DataService : IDataService
     {
-        public List<CarBodyType> BodyTypes { get; set; }
+        public List<CarBodyType> CarBodyTypes { get; set; }
         public List<CarModel> CarModels { get; set; }
         public bool Success { get; set; }
         public string ErrorMessage { get; set; }
@@ -20,6 +20,8 @@ namespace WEB_153504_SIVY.BlazorWasm.Services
         private readonly IConfiguration _configuration;
         private readonly HttpClient _httpClient;
         private readonly IAccessTokenProvider _tokenProvider;
+
+        public event Action DataLoaded;
 
         public DataService(HttpClient httpClient, IConfiguration configuration, IAccessTokenProvider tokenProvider)
         {
@@ -41,10 +43,9 @@ namespace WEB_153504_SIVY.BlazorWasm.Services
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadFromJsonAsync<ResponseData<List<CarBodyType>>>();
-                BodyTypes = data.Data;
-                TotalPages = 1;
-                CurrentPage = 1;
+                CarBodyTypes = data.Data;
             }
+            DataLoaded.Invoke();
         }
 
         public async Task GetCarModelByIdAsync(int id)
@@ -59,6 +60,7 @@ namespace WEB_153504_SIVY.BlazorWasm.Services
                 TotalPages = 1;
                 CurrentPage = 1;
             }
+            DataLoaded.Invoke();
         }
 
         public async Task GetCarModelListAsync(string? categoryNormalizedName, int pageNo = 1)
@@ -90,6 +92,7 @@ namespace WEB_153504_SIVY.BlazorWasm.Services
                     TotalPages = data.Data.TotalPages;
                     CurrentPage = data.Data.CurrentPage;
                 }
+                DataLoaded.Invoke();
             }
             catch
             {

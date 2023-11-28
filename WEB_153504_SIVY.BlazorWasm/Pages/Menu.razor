@@ -1,0 +1,51 @@
+﻿@page "/menu"
+@page "/menu/{pageno:int}"
+@page "/menu/{carbodytype}"
+@page "/menu/{carbodytype}/{pageno:int}"
+
+<PageTitle>Menu</PageTitle>
+
+<CarBodyTypeSelector SelectedName="@SelectedName"/>
+
+<CarModelList/>
+
+<Pager CarBodyType="@CarBodyType" />
+
+@code {
+    [Inject]
+    public IDataService DataService { get; set; }
+
+    [Parameter]
+    public string CarBodyType { get; set; }
+
+    [Parameter]
+    public int? PageNo { get; set; }
+
+    public string SelectedName { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (PageNo != null)
+        {
+            await DataService.GetCarModelListAsync(CarBodyType, (int)PageNo);
+        }
+        else
+        {
+            await DataService.GetCarModelListAsync(CarBodyType);
+        }
+
+        if (CarBodyType != null)
+        {
+            SelectedName = DataService.CarBodyTypes.FirstOrDefault(c => c.NormalizedName.Equals(CarBodyType)).Name;
+        }
+        else
+        {
+            SelectedName = "All";
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await DataService.GetCarModelListAsync(null);
+    }
+}

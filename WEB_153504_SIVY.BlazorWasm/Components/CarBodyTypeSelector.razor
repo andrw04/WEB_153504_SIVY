@@ -1,0 +1,32 @@
+﻿@inject IDataService dataService
+
+<h3>CarBodyTypeSelector</h3>
+
+@if (dataService.CarBodyTypes != null)
+{
+    <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+            @SelectedName
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+            <li>
+                <a class="dropdown-item" href="/menu/">All</a>
+            </li>
+            @foreach (var bodyType in dataService.CarBodyTypes)
+            {
+                <li><a class="dropdown-item" href="/menu/@bodyType?.NormalizedName">@bodyType?.Name</a></li>
+            }
+        </ul>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string SelectedName { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        await dataService.GetBodyTypeListAsync();
+    }
+
+}
